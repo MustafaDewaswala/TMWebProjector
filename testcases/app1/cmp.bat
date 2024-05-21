@@ -1,0 +1,1 @@
+g++ myapp.cpp -o myapp.exe -I ..\..\include -L ..\..\lib -l tmwp -l ws2_32

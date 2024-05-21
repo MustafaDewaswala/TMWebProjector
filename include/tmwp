@@ -1,0 +1,93 @@
+#include<windows.h>
+#include<iostream>
+using namespace std;
+namespace tmwp
+{
+class Request;
+class Response;
+typedef struct _request
+{
+char *method;
+char *resource;
+char isClientSideTechnologyResource;
+char *mimeType;
+int dataCount;
+char **data;   // p2p
+}REQUEST;
+typedef struct Integer
+{
+char *dataName;
+int data;
+struct Integer *next;
+}INTEGER;
+typedef struct _urlAndPtrOnRequest
+{
+char *url;
+void (*ptrOnRequest)(Request &,Response &);  // pointer to function
+struct _urlAndPtrOnRequest *next;
+}URL;
+class Request
+{
+private:
+REQUEST *request;
+char *requestSeparator;
+URL *urlManager;
+int isForwarding;
+INTEGER *intStart;
+public:
+Request(Request &other);
+Request(REQUEST *request);
+Request & operator=(Request &other);
+Request & operator=(REQUEST *request);
+void set(REQUEST *request);
+void setRequestSeparator(char *s);
+char * get(const char *c) const;
+void forward(const char *s);
+void setUrlManager(URL *urlManager);
+int IsForwarding();
+void setIsForwarding(int i);
+void setInt(string dataName,int data);
+int getInt(string dataName);
+void setIntData(char *dataName,int data);
+int getIntData(char *dataName);
+void appendIntData(INTEGER *str);
+};
+
+class Response
+{
+private:
+int clientSocketDescriptor;
+char *responseBuffer;
+char *tmp; 
+int isClose;
+public:
+Response();
+Response(Response &other);
+Response & operator=(Response &other);
+~Response();
+void setCSD(int csd);
+int getCSD();
+void write(const char *s) const;
+char * makeResponse();
+void sendResponse();
+void sendResponse(const char *rb) const;
+void sendResponse(const char *rb,const char *tmp) const;
+void close();
+int isClosed();
+};
+class TMWebProjector
+{
+private:
+int portNumber;
+URL *urlManager; // head of the list
+public:
+TMWebProjector(int portNumber);
+~TMWebProjector();
+void start();
+void onRequest(const char *,void (*ptrOnRequest)(Request &,Response &)); 
+void addInList(URL *url); 
+};
+}
+void findAndReplaceOnlyOnce(const char *p,const char *q,const char *r);
+int findOccurenceOfString(const char *e,const char *f);
+void searchAndReplaceinFile(const char *inputFile,const char *outputFile,const char *pattern,const char *replacement);
